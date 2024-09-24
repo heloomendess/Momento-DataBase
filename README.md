@@ -3,9 +3,12 @@
 <p>Contém a base de indicados da empresa "Momento" para treinar consultas complexas no MongoDB.</p>
     
 <h3>1. Quantos funcionarios da empresa Momento trabalham no departamento de vendas?</h3>
-<p></p>
+<p>- Tem 8 consultores de vendas</p>
+<p>- Tem 1 para vendas</p>
+<p>- Tem 1 Representante de Vendas para a América Latina</p>
 
-<pre></pre>
+<pre>db.funcionarios.countDocuments({cargo:"Consultor de Vendas"});</pre>
+<pre>db.funcionarios.countDocuments({cargo:"Vendas"});</pre>
 
 <br><br>
 
