@@ -3,40 +3,51 @@
 <p>Contém a base de indicados da empresa "Momento" para treinar consultas complexas no MongoDB.</p>
     
 <h3>1. Quantos funcionarios da empresa Momento trabalham no departamento de vendas?</h3>
-<p>- Tem 8 consultores de vendas</p>
-<p>- Tem 1 para vendas</p>
-<p>- Tem 1 Representante de Vendas para a América Latina</p>
 
+<p>- Tem 8 consultores de vendas</p>
 <pre>db.funcionarios.countDocuments({cargo:"Consultor de Vendas"});</pre>
+
+<p>- Tem 1 para vendas</p>
 <pre>db.funcionarios.countDocuments({cargo:"Vendas"});</pre>
+
+<p>- Tem 1 Representante de Vendas para a América Latina</p>
+db.funcionarios.countDocuments({cargo:"Representante de Vendas para a América Latina"});
 
 <br><br>
 
 <h3>2. Inclua suas próprias informações no departamento de Tecnologia da empresa.</h3>
-<p></p>
 
-<pre></pre>
+<pre>db.funcionarios.insertOne({"_id": ObjectId, "nome": "Heloisa Mendes", "telefone": "453.345.1233", "cargo": "Desenvolvedora Mobile", "salario": 12000, "comissao": true, "departamento": "Tecnologia"});</pre>
+<pre>
+  _id: Code('function(t){return(0,A.assertArgsDefinedType)([t],[[void 0,"string","number","object"]],"ObjectId"),new e.ObjectId(t)}'),
+  nome: 'Heloisa Mendes',
+  telefone: '453.345.1233',
+  cargo: 'Desenvolvedora Mobile',
+  salario: 12000,
+  comissao: true,
+  departamento: 'Tecnologia'
+</pre>
 
 <br><br>
         
 <h3>3. Agora diga, quantos funcionários temos ao total na empresa?</h3>
-<p></p>
+<p>24 funcionários.</p>
 
-<pre></pre>
+<pre>db.funcionarios.countDocuments()</pre>
 
 <br><br>
         
 <h3>4. E quanto ao Departamento de Tecnologia?</h3>
-<p></p>
+<p>2 pessoas do departamento de Tecnologia</p>
 
-<pre></pre>
+<pre>db.departamentos.countDocuments({nome: "Tecnologia"});</pre>
 
 <br><br>
         
 <h3>5. Qual a média salarial do departamento de tecnologia?</h3>
-        <p></p>
+<p>O departamento de Tecnologia de Web Developer tem a média salárial de: 3.475</p>
 
-<pre></pre>
+<pre>{cargo:"Web Developer"}</pre>
 
 <br><br>
         
