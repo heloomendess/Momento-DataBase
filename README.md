@@ -52,30 +52,114 @@ db.funcionarios.countDocuments({cargo:"Representante de Vendas para a América L
 <br><br>
         
 <h3>6. Quanto o departamento de Vendas gasta em salários?</h3>
-<p></p>
+<p>95100</p>
 
-<pre></pre>
+<pre>
+    db.funcionarios.aggregate([
+    {
+        $match: { "cargo": /vendas/i }
+    },
+    {
+        $group: {
+            _id: null,
+            gasto_em_salario: { $sum: "$salario" }
+        }
+    }
+])
+</pre>
 
 <br><br>
         
 <h3>7. Um novo departamento foi criado. O departamento de Inovações. Ele será locado no Brasil. Por favor, adicione-o no banco de dados da empresa colocando quaisquer informações que você achar relevantes.
 <p></p>
 
-<pre></pre>
+<pre>
+    db.departamentos.insertOne({
+    "_id": ObjectId("85992103f9b3e0b3b3c1fe74"),
+    "nome": "Inovações",
+    "escritorio": ObjectId("5f8b3f3f9b3e0b3b3c1e3e3e")
+});
+</pre>
     
 <br><br>
             
 <h3>8. O departamento de Inovações está sem funcionários. Inclua alguns colegas de turma nesse departamento.  
 <p></p>
 
-<pre></pre>
+<pre>
+    db.funcionarios.insertMany([
+    {
+        "nome": "Grazielly Oliveira",
+        "telefone": "(11) 9564-4353",
+        "email": "grazyoli@gmail.com",
+        "dataAdmissao": "2003-06-21",
+        "cargo": "Analista de Banco de Dados",
+        "salario": 17000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947'),
+    },
+    {
+        "nome": "Mariana Paiva",
+        "telefone": "(11) 94080-2315",
+        "email": "maripaiva@gmail.com",
+        "dataAdmissao": "2015-03-06",
+        "cargo": "Desenvolvedora Back-End",
+        "salario": 13000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947')
+    },
+    {
+        "nome": "Danilo Alcantara",
+        "telefone": "(11) 99653-5332",
+        "email": "daniloalcantara@gmail.com",
+        "dataAdmissao": "2012-02-10",
+        "cargo": "Scrum Master",
+        "salario": 15000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947'),
+    },
+    {
+        "nome": "Gustavo Rocha Cunha",
+        "telefone": "(11) 93085-3174",
+        "email": "gucunha@gmail.com",
+        "dataAdmissao": "2022-08-13",
+        "cargo": "Desenvolvedor Full Stack",
+        "salario": 15000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947'),
+    },
+    {
+        "nome": "Iury Sven de Oliveira",
+        "telefone":  "(11) 98305-7222",
+        "email": "iurysven@gmail.com",
+        "dataAdmissao": "2019-05-18",
+        "cargo": "Desenvolvedor Front End",
+        "salario": 13000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947'),
+    },
+    {
+        "nome": "Kawan Barbosa Turchiai",
+        "telefone": "(11) 91116-1868",
+        "email": "kawant@gmail.com",
+        "dataAdmissao": "2020-03-20",
+        "cargo": "Desenvolvedor Front End",
+        "salario": 13000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947')
+    }, 
+    {
+        "nome": "Celio Amorim",
+        "telefone": "(11) 92226-1868",
+        "email": "celioa@gmail.com",
+        "dataAdmissao": "2020-03-20",
+        "cargo": "Desenvolvedor Front End",
+        "salario": 13000,
+        "departamento": ObjectId('66f1c0efd15d5494e3f31947')
+    }
+]);
+</pre>
         
 <br><br>
                 
 <h3>9. Quantos funcionarios a empresa Momento tem agora?
-<p></p>
+<p>31 funcionários.</p>
 
-<pre></pre>
+<pre>db.funcionarios.countDocuments()</pre>
     
 <br><br>
             
