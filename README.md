@@ -164,58 +164,213 @@ db.funcionarios.countDocuments({cargo:"Representante de Vendas para a América L
 <br><br>
             
 <h3>10. Quantos funcionários da empresa Momento possuem conjuges?
-<p></p>
+<p>7 funcionários</p>
 
-<pre></pre>
+<pre>db.funcionarios.aggregate([
+    { $match: { "dependentes.conjuge": { $exists: true } } },
+    { $count: "totalFuncionariosComConjuge" }
+])</pre>
     
 <br><br>
             
 <h3>11. Qual a média salarial dos funcionários da empresa Momento, excluindo-se o CEO?
-<p></p>
+<p>A média salárial é 10856</p>
 
-<pre></pre>
+<pre>
+    db.funcionarios.aggregate([
+    {
+        $match: {
+            cargo: { $ne: "CEO" }
+        }
+    },
+    {
+        $group:{
+            _id: null,
+            mediaSalarial: { $avg: "$salario" }
+        }
+    } 
+])
+</pre>
     
 <br><br>
             
 <h3>12. Qual a média salarial do departamento de tecnologia? 
-<p></p>
+<p>A média salarial do departamento de tecnologia é 12000</p>
 
-<pre></pre>
+<pre>
+    db.funcionarios.aggregate([
+    {
+        $match: { "departamento": "Tecnologia" }
+    },
+    {
+        $group: {
+            _id: null,
+            a_media_salarial: { $avg: "$salario" }
+        }
+    }
+])
+</pre>
 
 <br><br>
             
 <h3>13. Qual o departamento com a maior média salarial?
-<p></p>
+<p>O departamento "Executivo", a média do salário desse departamento é de 71000</p>
 
-<pre></pre>
+<pre>
+    db.funcionarios.aggregate([
+    {
+        $group: {
+            _id: "$departamento",
+            mediaSalarial: { $avg: "$salario" }
+        }
+    },
+    {
+        $lookup: {
+            from: "departamentos",
+            localField: "_id",            
+            foreignField: "_id",
+            as: "informacoesDepartamento"
+        }
+    },
+    {
+        $sort: { mediaSalarial: -1 }
+    },
+    {
+        $limit: 1
+    },
+    {
+        $project: {
+            _id: 0,
+            mediaSalarial: 1,
+            "informacoesDepartamento.nome": 1
+        }
+    }
+])
+</pre>
     
 <br><br>
             
 <h3>14. O departamento com o menor número de funcionários?</h3>
-<p></p>
+<p>Executivo, com apenas 1 funcionário.</p>
 
-<pre></pre>
+<pre>
+    db.funcionarios.aggregate([
+    {
+        $group: {
+            _id: "$departamento",
+            totalFuncionarios: { $sum: 1 }
+        }
+    },
+    {
+        $lookup: {
+            from: "departamentos",
+            localField: "_id",
+            foreignField: "_id",
+            as: "infoDepartamento"
+        }
+    },
+    {
+        $sort: { totalFuncionarios: 1 }
+    },
+    {
+        $limit: 1
+    },
+    {
+        $project: {
+            _id: 0,
+            totalFuncionarios: 1,
+            nomeDepartamento: { $arrayElemAt: ["$infoDepartamento.nome", 0] }
+        }
+    }
+])
+</pre>
 
 <br><br>
         
 <h3>15. Pensando na relação quantidade e valor unitario, qual o produto mais valioso da empresa?</h3>
-<p></p>
+<p>São os computadores</p>
 
-<pre></pre>
+<pre>
+    db.escritorios.aggregate([
+    {
+        "$unwind": "$suprimentos"
+    },
+    {
+        "$lookup": {
+            "from": "departamentos",
+            "localField": "departamento",
+            "foreignField": "_id",
+            "as": "infoDepartamento"
+        }
+    },
+    {
+        "$group": {
+            "_id": "$suprimentos",
+            "quantidade": { "$sum": 1 },
+            "valorUnitario": { "$avg": "$infoDepartamento.preco" }
+        }
+    },
+    {
+        "$sort": {
+                "quantidade": -1,
+                "valorUnitario": -1
+            }
+    }
+])
+</pre>
 
 <br><br>
         
 <h3>16. O produto mais vendido da empresa?</h3>
-<p></p>
+<p>Laço da verdade</p>
 
-<pre></pre>
+<pre>
+    db.vendas.aggregate([
+    {
+        "$group": {
+            "_id": "$produto",
+            "count": { $sum: "$quantidade" }
+        }
+    },
+    {
+        "$sort": { "count": -1 }
+    },
+    {
+        "$limit": 1
+    }
+])
+</pre>
 
 <br><br>
         
 <h3>17. O produto menos vendido da empresa?</h3>
-<p></p>
+<p>Uniforme do superman</p>
 
-<pre></pre>
+<pre>
+    db.vendas.aggregate([
+    {
+        "$group": {
+            "_id": "$produto",
+            "totalQuantidade": { "$sum": "$quantidade" },
+            "totalVendas": { "$sum": { "$multiply": ["$quantidade", "$precoUnitario"] } }
+        }
+    },
+    {
+        "$sort": { "totalQuantidade": 1 }
+    },
+    {
+        "$limit": 1
+    },
+    {
+        "$project": {
+            "_id": 0,
+            "produto": "$_id",
+            "totalQuantidade": 1,
+            "totalVendas": 1
+        }
+    }
+]);
+</pre>
 
 <br><br>
         
